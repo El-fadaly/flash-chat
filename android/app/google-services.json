@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "624818321294",
+    "project_id": "flashchat-ecea5",
+    "storage_bucket": "flashchat-ecea5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:624818321294:android:4de962d9e956077a2916df",
+        "android_client_info": {
+          "package_name": "co.fadaly.flash_chat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "624818321294-nks7ihk1l4vaq7qqolfdr71n0n0ifr4r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB7Nmhzwzu6tv3k33hrgV5xPVG8l3EQRAs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "624818321294-nks7ihk1l4vaq7qqolfdr71n0n0ifr4r.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

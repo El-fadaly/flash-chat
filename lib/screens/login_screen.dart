@@ -1,11 +1,24 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flash_chat/components/alert_shower.dart';
+import 'package:flash_chat/screens/chat_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+
+import '../components/rounded_button.dart';
+import '../constants.dart';
 
 class LoginScreen extends StatefulWidget {
+  static const String id = 'login_screen';
+
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final _auth = FirebaseAuth.instance;
+
+  String _email, _password;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,83 +29,75 @@ class _LoginScreenState extends State<LoginScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Container(
-              height: 200.0,
-              child: Image.asset('images/logo.png'),
+            Flexible(
+              child: Hero(
+                tag: 'logo',
+                child: Container(
+                  height: 200.0,
+                  child: Image.asset('images/logo.png'),
+                ),
+              ),
             ),
             SizedBox(
               height: 48.0,
             ),
             TextField(
+              textAlign: TextAlign.center,
+              keyboardType: TextInputType.emailAddress,
               onChanged: (value) {
-                //Do something with the user input.
+                _email = value;
               },
-              decoration: InputDecoration(
-                hintText: 'Enter your email',
-                contentPadding:
-                    EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(32.0)),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderSide:
-                      BorderSide(color: Colors.lightBlueAccent, width: 1.0),
-                  borderRadius: BorderRadius.all(Radius.circular(32.0)),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide:
-                      BorderSide(color: Colors.lightBlueAccent, width: 2.0),
-                  borderRadius: BorderRadius.all(Radius.circular(32.0)),
-                ),
+              decoration: kTextFieldDecoration.copyWith(
+                hintText: 'Enter Your E-mail',
               ),
             ),
             SizedBox(
               height: 8.0,
             ),
             TextField(
+              textAlign: TextAlign.center,
+              obscureText: true,
               onChanged: (value) {
-                //Do something with the user input.
+                _password = value;
               },
-              decoration: InputDecoration(
-                hintText: 'Enter your password.',
-                contentPadding:
-                    EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(32.0)),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderSide:
-                      BorderSide(color: Colors.lightBlueAccent, width: 1.0),
-                  borderRadius: BorderRadius.all(Radius.circular(32.0)),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide:
-                      BorderSide(color: Colors.lightBlueAccent, width: 2.0),
-                  borderRadius: BorderRadius.all(Radius.circular(32.0)),
-                ),
+              decoration: kTextFieldDecoration.copyWith(
+                hintText: 'Enter Your Password',
               ),
             ),
             SizedBox(
               height: 24.0,
             ),
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 16.0),
-              child: Material(
+            RoundedButton(
                 color: Colors.lightBlueAccent,
-                borderRadius: BorderRadius.all(Radius.circular(30.0)),
-                elevation: 5.0,
-                child: MaterialButton(
-                  onPressed: () {
-                    //Implement login functionality.
-                  },
-                  minWidth: 200.0,
-                  height: 42.0,
-                  child: Text(
-                    'Log In',
-                  ),
-                ),
-              ),
-            ),
+                buttonText: 'Log In',
+                onPressed: () async {
+                  if (_email != null && _password != null) {
+                    EasyLoading.show();
+                    try {
+                      final user = await _auth.signInWithEmailAndPassword(
+                          email: _email, password: _password);
+
+                      if (user != null) {
+                        Navigator.pushNamed(context, ChatScreen.id);
+                        EasyLoading.dismiss();
+                      }
+                    } catch (e) {
+                      print(e);
+                      EasyLoading.dismiss();
+                    }
+                  } else if (_email == null && _password == null) {
+                    AlertShower.showAlert('missing Email and passwaord',
+                        'email and password', context);
+                  } else if (_email == null) {
+                    AlertShower.showAlert('missing Email ', 'email', context);
+                  } else if (_password == null) {
+                    AlertShower.showAlert(
+                        'missing passwaord', 'password', context);
+                  } else if (_password.length < 6) {
+                    AlertShower.showAlert('Insuitable Password',
+                        'a 6 character password', context);
+                  }
+                }),
           ],
         ),
       ),
